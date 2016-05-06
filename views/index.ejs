@@ -1,0 +1,78 @@
+<!doctype html>
+<title>term.js</title>
+<!--
+  term.js
+  Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
+-->
+<style>
+  html {
+    background: #555;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+    font: 20px/1.5 sans-serif;
+  }
+
+/*
+  .terminal {
+    float: left;
+    border: #000 solid 5px;
+    font-family: "DejaVu Sans Mono", "Liberation Mono", monospace;
+    font-size: 11px;
+    color: #f0f0f0;
+    background: #000;
+  }
+
+  .terminal-cursor {
+    color: #000;
+    background: #f0f0f0;
+  }
+*/
+</style>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascripts/term.js"></script>
+<script src="/javascripts/uuid.js"></script>
+<script>
+'use strict';
+(function() {
+  window.onload = function() {
+  	var id = uuid.v1();
+  	// var id='db02bc00-135b-11e6-a86c-d52e32f526a3';
+  	var server='<%= server %>';
+  	console.log('client id',id);
+    var socket = io.connect('<%= url %>',{query:'id='+id+'&connectTo='+server});
+    socket.on('connect', function() {
+      var term = new Terminal({
+        cols: 192,
+        rows: 45,
+        useStyle: true,
+        screenKeys: true,
+        cursorBlink: false
+      });
+
+      term.on('data', function(data) {
+        console.log('send:',server,data);
+        socket.emit('data', data);
+      });
+
+      term.on('title', function(title) {
+        document.title = title;
+      });
+
+      term.open(document.body);
+
+      term.write('\x1b[31mWelcome!\x1b[m\r\n');
+
+      socket.on('data', function(data) {
+        console.log('rec:',data);
+        term.write(data);
+      });
+
+      socket.on('disconnect', function() {
+        term.destroy();
+      });
+    });
+  };
+}).call(this);
+</script>
