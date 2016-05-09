@@ -2,7 +2,7 @@
 var _ = require('underscore');
 
 var io = process.io;
-var rooms = {
+process.rooms = {
   server: [],
   browser: []
 };
@@ -14,7 +14,7 @@ io.sockets.on('connection', function(sock) {
     sock.join('server');
     sock.room = 'server';
     sock.connId = sock.handshake.query.id;
-    rooms.server.push({
+    process.rooms.server.push({
       "id": sock.connId,
       socket: sock
     });
@@ -23,23 +23,23 @@ io.sockets.on('connection', function(sock) {
     sock.join('browser');
     sock.room = 'browser';
     sock.connId = sock.handshake.query.id;
-    rooms.browser.push({
+    process.rooms.browser.push({
       "id": sock.connId,
       socket: sock,
       connect: sock.handshake.query.connectTo
     });
 
-    for (var index in rooms.server) {
+    for (var index in process.rooms.server) {
 
-      if (rooms.server[index].id === sock.handshake.query.connectTo) {
+      if (process.rooms.server[index].id === sock.handshake.query.connectTo) {
 
-        rooms.server[index].connect = sock.connId;
+        process.rooms.server[index].connect = sock.connId;
 
       }
     }
     // console.log(rooms.browser);
   }
-  console.log('connected:', rooms.server.length, rooms.browser.length, sock.id);
+  console.log('connected:', process.rooms.server.length, process.rooms.browser.length, sock.id);
   var socketInfo = new socketsInfo(sock);
 
   socketInfo.onData(function brodcast(data, socket) {
@@ -47,10 +47,10 @@ io.sockets.on('connection', function(sock) {
 
     var toRoom = (socket.room === 'server') ? 'browser' : 'server';
 
-    var toID = _.findWhere(rooms[socket.room], {
+    var toID = _.findWhere(process.rooms[socket.room], {
       id: socket.connId
     });
-    var toSocket = _.findWhere(rooms[toRoom], {
+    var toSocket = _.findWhere(process.rooms[toRoom], {
       id: toID.connect
     });
     console.log('toroom', toRoom, toID.connect);
@@ -65,7 +65,7 @@ io.sockets.on('connection', function(sock) {
     var toId = null;
     var toRoom = (this.room === 'server') ? 'browser' : 'server';
 
-    rooms[this.room] = rooms[this.room].filter(function(obj) {
+    process.rooms[this.room] = process.rooms[this.room].filter(function(obj) {
       if (obj.id !== id) {
         return true;
       } else {
@@ -74,7 +74,7 @@ io.sockets.on('connection', function(sock) {
       }
     });
 
-    console.log('connected:', rooms.server.length, rooms.browser.length);
+    console.log('connected:', process.rooms.server.length, process.rooms.browser.length);
   });
 
 });

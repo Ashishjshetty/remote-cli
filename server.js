@@ -30,7 +30,7 @@ io.on('connect', function() {
 	});
 	io.on('disconnect', function() {
 		console.log('disconnected!!!!!!!!!!!!');
-		io.io.disconnect();
+		io.close();
 	});
 	io.on('reconnecting', function() {
 		console.log('reconnecting!!!!!1');
