@@ -4,7 +4,7 @@
 var uuid = require('uuid');
 var id = uuid.v1();
 // var id = 'c569b750-1350-11e6-b828-09b27c2e7440'
-var io = require('socket.io-client')('ws://127.0.0.1:8080', {
+var io = require('socket.io-client')('ws://0127.0.0.1:8080', {
     query: "id=" + id,
 
 

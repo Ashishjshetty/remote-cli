@@ -49,7 +49,7 @@
   	// var id='db02bc00-135b-11e6-a86c-d52e32f526a3';
   	var server='<%= server %>';
   	console.log('client id',id);
-    var socket = io.connect('<%= url %>',{query:'id='+id+'&connectTo='+server});
+    var socket = io.connect('',{query:'id='+id+'&connectTo='+server});
     socket.on('connect', function() {
       var term = new Terminal({
         cols: 192,

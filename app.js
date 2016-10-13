@@ -2,7 +2,7 @@
 var express = require('express');
 var path = require('path');
 // var favicon = require('serve-favicon');
-
+const basicauth = require('basicauth-middleware');
 var terminal = require('term.js');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -12,16 +12,16 @@ var routes = require('./routes/index');
 
 
 var app = express();
-
+app.use(basicauth('dev@leafair.co.in', 'qwerty123'));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-// app.use(express.basicAuth(function(user, pass, next) {
-//   if (user !== 'foo' || pass !== 'bar') {
-//     return next(true);
-//   }
-//   return next(null, user);
-// }));
+app.use(basicauth(function(username, password) {
+    // Your check function 
+    const auth = (username === 'dev@leafair.co.in' && password === 'qwerty123') ? true : false;
+
+    return auth;
+}));
 app.use(terminal.middleware());
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

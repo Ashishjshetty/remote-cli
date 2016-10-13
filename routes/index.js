@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
 router.get('/connect/:id', function(req, res) {
     var id = req.params.id;
     res.render('index', {
-        url: 'ws://127.0.0.1:8080',
+        url: 'ws://dev.leaf.co.in:8000',
         server: id
     });
 });
